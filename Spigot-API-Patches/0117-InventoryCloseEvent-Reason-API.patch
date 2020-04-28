@@ -1,4 +1,4 @@
-From 79b0b5b19b53d8ecf4eeeae5adbd66d271ce7fd1 Mon Sep 17 00:00:00 2001
+From 9dd56c5585f21d0b8c82ca0b4989fa7eb31ad9f5 Mon Sep 17 00:00:00 2001
 From: Aikar <aikar@aikar.co>
 Date: Tue, 3 Jul 2018 21:52:52 -0400
 Subject: [PATCH] InventoryCloseEvent Reason API
@@ -7,10 +7,10 @@ Allows you to determine why an inventory was closed, enabling plugin developers
 to "confirm" things based on if it was player triggered close or not.
 
 diff --git a/src/main/java/org/bukkit/entity/HumanEntity.java b/src/main/java/org/bukkit/entity/HumanEntity.java
-index ca789867..d4b3caeb 100644
+index cdbac95bb..f25c73155 100644
 --- a/src/main/java/org/bukkit/entity/HumanEntity.java
 +++ b/src/main/java/org/bukkit/entity/HumanEntity.java
-@@ -138,6 +138,15 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder
+@@ -152,6 +152,15 @@ public interface HumanEntity extends LivingEntity, AnimalTamer, InventoryHolder
       */
      public void closeInventory();
  
@@ -20,22 +20,23 @@ index ca789867..d4b3caeb 100644
 +     *
 +     * @param reason why the inventory is closing
 +     */
-+    public void closeInventory(org.bukkit.event.inventory.InventoryCloseEvent.Reason reason);
++    public void closeInventory(@NotNull org.bukkit.event.inventory.InventoryCloseEvent.Reason reason);
 +    // Paper end
 +
      /**
       * Returns the ItemStack currently in your hand, can be empty.
       *
 diff --git a/src/main/java/org/bukkit/event/inventory/InventoryCloseEvent.java b/src/main/java/org/bukkit/event/inventory/InventoryCloseEvent.java
-index 19889b27..e6e45b93 100644
+index 5861247c1..21ad8888c 100644
 --- a/src/main/java/org/bukkit/event/inventory/InventoryCloseEvent.java
 +++ b/src/main/java/org/bukkit/event/inventory/InventoryCloseEvent.java
-@@ -11,8 +11,58 @@ import org.bukkit.inventory.InventoryView;
+@@ -11,9 +11,60 @@ import org.jetbrains.annotations.NotNull;
+  */
  public class InventoryCloseEvent extends InventoryEvent {
      private static final HandlerList handlers = new HandlerList();
- 
 +    // Paper start
 +    private final Reason reason;
++    @NotNull
 +    public Reason getReason() {
 +        return reason;
 +    }
@@ -78,11 +79,12 @@ index 19889b27..e6e45b93 100644
 +         */
 +        PLUGIN,
 +    }
-     public InventoryCloseEvent(InventoryView transaction) {
+ 
+     public InventoryCloseEvent(@NotNull InventoryView transaction) {
 +        this(transaction, Reason.UNKNOWN);
 +    }
 +
-+    public InventoryCloseEvent(InventoryView transaction, Reason reason) {
++    public InventoryCloseEvent(@NotNull InventoryView transaction, @NotNull Reason reason) {
          super(transaction);
 +        this.reason = reason;
 +        // Paper end
@@ -90,5 +92,5 @@ index 19889b27..e6e45b93 100644
  
      /**
 -- 
-2.20.1
+2.25.1
 

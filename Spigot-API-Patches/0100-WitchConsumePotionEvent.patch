@@ -1,4 +1,4 @@
-From d902c6cdb1dfed8c8eafff0a513e91a87186c94e Mon Sep 17 00:00:00 2001
+From 15909a0d10135b8cfa2062fb3df50d2277a10528 Mon Sep 17 00:00:00 2001
 From: Aikar <aikar@aikar.co>
 Date: Wed, 16 May 2018 20:26:16 -0400
 Subject: [PATCH] WitchConsumePotionEvent
@@ -7,10 +7,10 @@ Fires when a witch consumes the potion in their hand
 
 diff --git a/src/main/java/com/destroystokyo/paper/event/entity/WitchConsumePotionEvent.java b/src/main/java/com/destroystokyo/paper/event/entity/WitchConsumePotionEvent.java
 new file mode 100644
-index 000000000..790218998
+index 000000000..fbbace36d
 --- /dev/null
 +++ b/src/main/java/com/destroystokyo/paper/event/entity/WitchConsumePotionEvent.java
-@@ -0,0 +1,64 @@
+@@ -0,0 +1,70 @@
 +package com.destroystokyo.paper.event.entity;
 +
 +import org.bukkit.entity.Witch;
@@ -18,18 +18,21 @@ index 000000000..790218998
 +import org.bukkit.event.HandlerList;
 +import org.bukkit.event.entity.EntityEvent;
 +import org.bukkit.inventory.ItemStack;
++import org.jetbrains.annotations.NotNull;
++import org.jetbrains.annotations.Nullable;
 +
 +/**
 + * Fired when a witch consumes the potion in their hand to buff themselves.
 + */
 +public class WitchConsumePotionEvent extends EntityEvent implements Cancellable {
-+    private ItemStack potion;
++    @Nullable private ItemStack potion;
 +
-+    public WitchConsumePotionEvent(Witch witch, ItemStack potion) {
++    public WitchConsumePotionEvent(@NotNull Witch witch, @Nullable ItemStack potion) {
 +        super(witch);
 +        this.potion = potion;
 +    }
 +
++    @NotNull
 +    @Override
 +    public Witch getEntity() {
 +        return (Witch) super.getEntity();
@@ -38,6 +41,7 @@ index 000000000..790218998
 +    /**
 +     * @return the potion the witch will consume and have the effects applied.
 +     */
++    @Nullable
 +    public ItemStack getPotion() {
 +        return potion;
 +    }
@@ -46,16 +50,18 @@ index 000000000..790218998
 +     * Sets the potion to be consumed and applied to the witch.
 +     * @param potion The potion
 +     */
-+    public void setPotion(ItemStack potion) {
++    public void setPotion(@Nullable ItemStack potion) {
 +        this.potion = potion != null ? potion.clone() : null;
 +    }
 +
 +    private static final HandlerList handlers = new HandlerList();
 +
++    @NotNull
 +    public HandlerList getHandlers() {
 +        return handlers;
 +    }
 +
++    @NotNull
 +    public static HandlerList getHandlerList() {
 +        return handlers;
 +    }
@@ -115,5 +121,5 @@ index 000000000..6ef6367b6
 +    }
 +}
 -- 
-2.18.0
+2.25.1
 

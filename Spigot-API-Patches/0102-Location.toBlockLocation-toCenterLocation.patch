@@ -1,4 +1,4 @@
-From 6b5682f52304efe35982bf2d15e3d9a25b840b66 Mon Sep 17 00:00:00 2001
+From d1e4f01c2240314cf9fb94f6a4175a7b61bd4626 Mon Sep 17 00:00:00 2001
 From: Aikar <aikar@aikar.co>
 Date: Thu, 24 May 2018 21:01:13 -0400
 Subject: [PATCH] Location.toBlockLocation/toCenterLocation()
@@ -6,18 +6,19 @@ Subject: [PATCH] Location.toBlockLocation/toCenterLocation()
 Convert location objects to their block coordinates, or the center of the block
 
 diff --git a/src/main/java/org/bukkit/Location.java b/src/main/java/org/bukkit/Location.java
-index 1ddebf3c..916238c4 100644
+index 6c8b8eddc..f61bf28af 100644
 --- a/src/main/java/org/bukkit/Location.java
 +++ b/src/main/java/org/bukkit/Location.java
-@@ -492,6 +492,29 @@ public class Location implements Cloneable, ConfigurationSerializable {
+@@ -534,6 +534,31 @@ public class Location implements Cloneable, ConfigurationSerializable {
      }
  
-     public boolean isChunkLoaded() { return world.isChunkLoaded(locToBlock(x) >> 4, locToBlock(z) >> 4); } // Paper
+     public boolean isChunkLoaded() { return this.getWorld().isChunkLoaded(locToBlock(x) >> 4, locToBlock(z) >> 4); } // Paper
 +
 +    // Paper start
 +    /**
 +     * @return A new location where X/Y/Z are on the Block location (integer value of X/Y/Z)
 +     */
++    @NotNull
 +    public Location toBlockLocation() {
 +        Location blockLoc = clone();
 +        blockLoc.setX(getBlockX());
@@ -28,6 +29,7 @@ index 1ddebf3c..916238c4 100644
 +    /**
 +     * @return A new location where X/Y/Z are the center of the block
 +     */
++    @NotNull
 +    public Location toCenterLocation() {
 +        Location centerLoc = clone();
 +        centerLoc.setX(getBlockX() + 0.5);
@@ -40,5 +42,5 @@ index 1ddebf3c..916238c4 100644
      public boolean equals(Object obj) {
          if (obj == null) {
 -- 
-2.18.0
+2.25.1
 

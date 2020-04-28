@@ -1,29 +1,14 @@
-From 516693b2cf7b54953f8ea3dfd1ffc41fb2d61314 Mon Sep 17 00:00:00 2001
+From c9684d7cf3639906c7f19f842e5c3628f60fdd42 Mon Sep 17 00:00:00 2001
 From: Zach Brown <zach.brown@destroystokyo.com>
 Date: Wed, 2 Mar 2016 23:45:17 -0600
 Subject: [PATCH] Disable spigot tick limiters
 
 
 diff --git a/src/main/java/net/minecraft/server/World.java b/src/main/java/net/minecraft/server/World.java
-index ac602abc0..ac23ae323 100644
+index 4604634577..4d849719f4 100644
 --- a/src/main/java/net/minecraft/server/World.java
 +++ b/src/main/java/net/minecraft/server/World.java
-@@ -1119,10 +1119,10 @@ public abstract class World implements IEntityAccess, GeneratorAccess, IIBlockAc
-         // CraftBukkit start - Use field for loop variable
-         co.aikar.timings.TimingHistory.entityTicks += this.entityList.size(); // Paper
-         int entitiesThisCycle = 0;
--        if (tickPosition < 0) tickPosition = 0;
--        for (entityLimiter.initTick();
--                entitiesThisCycle < entityList.size() && (entitiesThisCycle % 10 != 0 || entityLimiter.shouldContinue());
--                tickPosition++, entitiesThisCycle++) {
-+        // Paper start - Disable tick limiters
-+        //if (tickPosition < 0) tickPosition = 0;
-+        for (tickPosition = 0; tickPosition < entityList.size(); tickPosition++) {
-+            // Paper end
-             tickPosition = (tickPosition < entityList.size()) ? tickPosition : 0;
-             entity = (Entity) this.entityList.get(this.tickPosition);
-             // CraftBukkit end
-@@ -1186,9 +1186,7 @@ public abstract class World implements IEntityAccess, GeneratorAccess, IIBlockAc
+@@ -634,9 +634,7 @@ public abstract class World implements GeneratorAccess, AutoCloseable {
          // Spigot start
          // Iterator iterator = this.tileEntityListTick.iterator();
          int tilesThisCycle = 0;
@@ -35,5 +20,5 @@ index ac602abc0..ac23ae323 100644
              TileEntity tileentity = (TileEntity) this.tileEntityListTick.get(tileTickPosition);
              // Spigot start
 -- 
-2.20.1
+2.25.1
 

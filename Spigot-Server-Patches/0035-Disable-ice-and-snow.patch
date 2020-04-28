@@ -1,14 +1,14 @@
-From 3e950e16bbbff96b09fb37f9fbffbed216f61a68 Mon Sep 17 00:00:00 2001
+From 7fb1549030943565fa14dd15b2aaed60d6732d22 Mon Sep 17 00:00:00 2001
 From: Sudzzy <originmc@outlook.com>
 Date: Wed, 2 Mar 2016 14:57:24 -0600
 Subject: [PATCH] Disable ice and snow
 
 
 diff --git a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-index 13253f6e9..cde9c11f4 100644
+index 41436a4ead..f53d8b9675 100644
 --- a/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
 +++ b/src/main/java/com/destroystokyo/paper/PaperWorldConfig.java
-@@ -160,4 +160,9 @@ public class PaperWorldConfig {
+@@ -166,4 +166,9 @@ public class PaperWorldConfig {
      private void disableThunder() {
          disableThunder = getBoolean("disable-thunder", false);
      }
@@ -19,18 +19,18 @@ index 13253f6e9..cde9c11f4 100644
 +    }
  }
 diff --git a/src/main/java/net/minecraft/server/WorldServer.java b/src/main/java/net/minecraft/server/WorldServer.java
-index 54c1b484a..7bece8558 100644
+index 856857d559..a34df8ce5d 100644
 --- a/src/main/java/net/minecraft/server/WorldServer.java
 +++ b/src/main/java/net/minecraft/server/WorldServer.java
-@@ -496,7 +496,7 @@ public class WorldServer extends World implements IAsyncTaskHandler {
-                 }
+@@ -465,7 +465,7 @@ public class WorldServer extends World {
+         }
  
-                 this.methodProfiler.exitEnter("iceandsnow");
--                if (this.random.nextInt(16) == 0) {
-+                if (!this.paperConfig.disableIceAndSnow && this.random.nextInt(16) == 0) { // Paper - Disable ice and snow
-                     this.m = this.m * 3 + 1013904223;
-                     l = this.m >> 2;
-                     blockposition = this.getHighestBlockYAt(HeightMap.Type.MOTION_BLOCKING, new BlockPosition(j + (l & 15), 0, k + (l >> 8 & 15)));
+         gameprofilerfiller.exitEnter("iceandsnow");
+-        if (this.random.nextInt(16) == 0) {
++        if (!this.paperConfig.disableIceAndSnow && this.random.nextInt(16) == 0) { // Paper - Disable ice and snow
+             blockposition = this.getHighestBlockYAt(HeightMap.Type.MOTION_BLOCKING, this.a(j, 0, k, 15));
+             BlockPosition blockposition1 = blockposition.down();
+             BiomeBase biomebase = this.getBiome(blockposition);
 -- 
-2.20.1
+2.25.1
 

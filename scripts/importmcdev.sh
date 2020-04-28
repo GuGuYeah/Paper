@@ -46,7 +46,7 @@ function importLibrary {
             exit 1
         fi
         export MODLOG="$MODLOG  Imported $file from $lib\n";
-        cp "$base" "$target" || exit 1
+        sed 's/\r$//' "$base" > "$target" || exit 1
     done
 }
 
@@ -106,6 +106,7 @@ done
 
 # dont forget \ at end of each line but last
 importLibrary com.mojang authlib com/mojang/authlib yggdrasil/YggdrasilGameProfileRepository.java
+importLibrary com.mojang datafixerupper com/mojang/datafixers/util Either.java
 
 ########################################################
 ########################################################

@@ -1,4 +1,4 @@
-From fcea42cc3d3d4bc1e4ade7725e589b16b6a018e3 Mon Sep 17 00:00:00 2001
+From 0943d0da18af92bd7cb5fe9c9143f01d2d282b30 Mon Sep 17 00:00:00 2001
 From: Aikar <aikar@aikar.co>
 Date: Wed, 4 Jul 2018 02:13:59 -0400
 Subject: [PATCH] Store counts for each Entity/Block Entity Type
@@ -6,12 +6,12 @@ Subject: [PATCH] Store counts for each Entity/Block Entity Type
 Opens door for future patches to optimize performance
 
 diff --git a/src/main/java/net/minecraft/server/Chunk.java b/src/main/java/net/minecraft/server/Chunk.java
-index b728a44f5..23dee9b56 100644
+index 061384b01..2b6fe2e01 100644
 --- a/src/main/java/net/minecraft/server/Chunk.java
 +++ b/src/main/java/net/minecraft/server/Chunk.java
-@@ -67,15 +67,19 @@ public class Chunk implements IChunkAccess {
-     private int neighbors = 0x1 << 12;
-     public long chunkKey;
+@@ -56,15 +56,19 @@ public class Chunk implements IChunkAccess {
+     }
+ 
      // Paper start
 +    public final co.aikar.util.Counter<String> entityCounts = new co.aikar.util.Counter<>();
 +    public final co.aikar.util.Counter<String> tileEntityCounts = new co.aikar.util.Counter<>();
@@ -29,7 +29,7 @@ index b728a44f5..23dee9b56 100644
              }
              return replaced;
          }
-@@ -85,6 +89,7 @@ public class Chunk implements IChunkAccess {
+@@ -74,6 +78,7 @@ public class Chunk implements IChunkAccess {
              TileEntity removed = super.remove(key);
              if (removed != null) {
                  removed.setCurrentChunk(null);
@@ -37,22 +37,22 @@ index b728a44f5..23dee9b56 100644
              }
              return removed;
          }
-@@ -682,6 +687,7 @@ public class Chunk implements IChunkAccess {
-         this.entitySlices[k].add(entity);
-         // Paper start
-         entity.setCurrentChunk(this);
-+        entityCounts.increment(entity.getMinecraftKeyString());
-         // Paper end
-     }
+@@ -472,6 +477,7 @@ public class Chunk implements IChunkAccess {
+             k = this.entitySlices.length - 1;
+         }
  
-@@ -706,6 +712,7 @@ public class Chunk implements IChunkAccess {
++        if (!entity.inChunk || entity.getCurrentChunk() != this) entityCounts.increment(entity.getMinecraftKeyString()); // Paper
+         entity.inChunk = true;
+         entity.setCurrentChunk(this); // Paper
+         entity.chunkX = this.loc.x;
+@@ -505,6 +511,7 @@ public class Chunk implements IChunkAccess {
+         if (!this.entitySlices[i].remove(entity)) {
              return;
          }
-         entity.setCurrentChunk(null);
 +        entityCounts.decrement(entity.getMinecraftKeyString());
          // Paper end
+         this.entities.remove(entity); // Paper
      }
- 
 -- 
-2.20.1
+2.26.0
 

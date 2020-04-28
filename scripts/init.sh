@@ -16,6 +16,20 @@ if [ "x$patch" == "x" ]; then
     patch="$basedir/hctap.exe"
 fi
 
+# apply patches directly to the file tree
+# used to fix issues from upstream source repos
+cd "$basedir"
+prepatchesdir="$basedir/scripts/pre-source-patches"
+for file in $(ls "$prepatchesdir")
+do
+    if [ $file == "README.md" ]; then
+        continue
+    fi
+
+    echo "--==-- Applying PRE-SOURCE patch: $file --==--"
+    $patch -p0 < "$prepatchesdir/$file"
+done
+
 echo "Applying CraftBukkit patches to NMS..."
 cd "$workdir/CraftBukkit"
 $gitcmd checkout -B patched HEAD >/dev/null 2>&1
@@ -29,7 +43,7 @@ do
     cp "$nms/$file" "$cb/$file"
 done
 $gitcmd add src
-$gitcmd commit -m "Minecraft $ $(date)" --author="Auto <auto@mated.null>"
+$gitcmd commit -m "Minecraft $ $(date)" --author="Vanilla <auto@mated.null>"
 
 # apply patches
 for file in $(ls nms-patches)
@@ -46,6 +60,6 @@ do
 done
 
 $gitcmd add src
-$gitcmd commit -m "CraftBukkit $ $(date)" --author="Auto <auto@mated.null>"
+$gitcmd commit -m "CraftBukkit $ $(date)" --author="CraftBukkit <auto@mated.null>"
 $gitcmd checkout -f HEAD~2
 )
